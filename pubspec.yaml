@@ -1,7 +1,6 @@
 name: tkm_telefon_ussa
 description: TKM Telefon Ussa mobile app
 publish_to: 'none'
-
 version: 1.0.0+1
 
 environment:
@@ -10,9 +9,12 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
   cupertino_icons: ^1.0.8
   image_picker: ^1.1.2
+  firebase_core: ^4.14.0
+  firebase_auth: ^6.6.1
+  cloud_firestore: ^6.9.0
+  firebase_storage: ^13.5.0
 
 dev_dependencies:
   flutter_test:
