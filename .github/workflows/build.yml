@@ -23,6 +23,28 @@ jobs:
         run: |
           flutter create --project-name tkm_telefon_ussa build_app
 
+      - name: SHA-1 almak
+        run: |
+          mkdir -p ~/.android
+          if [ ! -f ~/.android/debug.keystore ]; then
+            keytool -genkeypair \
+              -v \
+              -keystore ~/.android/debug.keystore \
+              -storepass android \
+              -alias androiddebugkey \
+              -keypass android \
+              -keyalg RSA \
+              -keysize 2048 \
+              -validity 10000 \
+              -dname "CN=Android Debug,O=Android,C=US"
+          fi
+
+          keytool -list -v \
+            -alias androiddebugkey \
+            -keystore ~/.android/debug.keystore \
+            -storepass android \
+            -keypass android | grep "SHA1:"
+
       - name: Kodlary göçür
         run: |
           cp lib/main.dart build_app/lib/main.dart
@@ -33,8 +55,8 @@ jobs:
       - name: Firebase plugin goş
         working-directory: build_app
         run: |
-          sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services") version "4.4.2"' android/app/build.gradle.kts
           sed -i '/plugins {/a\    id("com.google.gms.google-services") version "4.4.2" apply false' android/settings.gradle.kts
+          sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services")' android/app/build.gradle.kts
 
       - name: Paketleri taýýarla
         working-directory: build_app
