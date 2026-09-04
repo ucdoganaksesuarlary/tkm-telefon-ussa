@@ -37,6 +37,73 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  void message(BuildContext context, String text) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(text)),
+    );
+  }
+
+  Widget serviceButton(
+    BuildContext context,
+    IconData icon,
+    String title,
+    VoidCallback action,
+  ) {
+    return InkWell(
+      onTap: action,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color(0xFF181B26),
+          borderRadius: BorderRadius.circular(18),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: Colors.blue,
+              size: 32,
+            ),
+            const SizedBox(height: 8),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget step(int number, String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: Row(
+        children: [
+          CircleAvatar(
+            backgroundColor: Colors.blue,
+            radius: 17,
+            child: Text(
+              '$number',
+              style: const TextStyle(
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+          const SizedBox(width: 12),
+          Text(
+            text,
+            style: const TextStyle(fontSize: 16),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,12 +111,16 @@ class HomePage extends StatelessWidget {
         backgroundColor: const Color(0xFF0F1018),
         title: const Text(
           'TKM TELEFON USSA',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         actions: [
           IconButton(
             onPressed: () {},
-            icon: const Icon(Icons.notifications_none),
+            icon: const Icon(
+              Icons.notifications_none,
+            ),
           ),
         ],
       ),
@@ -65,6 +136,7 @@ class HomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
+
             const SizedBox(height: 20),
 
             Container(
@@ -147,13 +219,19 @@ class HomePage extends StatelessWidget {
                   context,
                   Icons.receipt_long,
                   'Arzalarym',
-                  () => message(context, 'Arzalarym ýakynda goşular.'),
+                  () => message(
+                    context,
+                    'Arzalarym ýakynda goşular.',
+                  ),
                 ),
                 serviceButton(
                   context,
                   Icons.payments,
                   'Bahalar',
-                  () => message(context, 'Bahalar ýakynda goşular.'),
+                  () => message(
+                    context,
+                    'Bahalar ýakynda goşular.',
+                  ),
                 ),
                 serviceButton(
                   context,
@@ -232,12 +310,15 @@ class HomePage extends StatelessWidget {
           ],
         ),
       ),
-      bottomNavigationBar: const BottomNavigationBar(
-        backgroundColor: Color(0xFF15161E),
+
+      // Bu ýerde const aýryldy
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: const Color(0xFF15161E),
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
-        items: [
+        currentIndex: 0,
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
             label: 'Baş sahypa',
@@ -262,75 +343,11 @@ class HomePage extends StatelessWidget {
       ),
     );
   }
-
-  Widget serviceButton(
-    BuildContext context,
-    IconData icon,
-    String title,
-    VoidCallback action,
-  ) {
-    return InkWell(
-      onTap: action,
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFF181B26),
-          borderRadius: BorderRadius.circular(18),
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              color: Colors.blue,
-              size: 32,
-            ),
-            const SizedBox(height: 8),
-            Text(
-              title,
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget step(int number, String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 12),
-      child: Row(
-        children: [
-          CircleAvatar(
-            backgroundColor: Colors.blue,
-            radius: 17,
-            child: Text(
-              '$number',
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-          const SizedBox(width: 12),
-          Text(text),
-        ],
-      ),
-    );
-  }
-
-  void message(BuildContext context, String text) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(text)),
-    );
-  }
 }
 
 
 // =====================================================
-// TELEFON BEJERTMEK
+// TELEFON BEJERTMEK — ARZA FORMASY
 // =====================================================
 
 class RepairPage extends StatefulWidget {
@@ -351,7 +368,7 @@ class _RepairPageState extends State<RepairPage> {
 
   String problem = 'Ekran döwüldi';
 
-  final problems = [
+  final List<String> problems = [
     'Ekran döwüldi',
     'Sensor işlemeýär',
     'Zarýad almaýar',
@@ -381,7 +398,9 @@ class _RepairPageState extends State<RepairPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text('Arza kabul edildi! ✅'),
+          title: const Text(
+            'Arza kabul edildi! ✅',
+          ),
           content: const Text(
             'Arzaňyz üstünlikli taýýarlandy. '
             'Ussa ýakyn wagtda siziň bilen habarlaşar.',
@@ -400,13 +419,57 @@ class _RepairPageState extends State<RepairPage> {
     );
   }
 
+  InputDecoration input(
+    String hint,
+    IconData icon,
+  ) {
+    return InputDecoration(
+      hintText: hint,
+      prefixIcon: Icon(icon),
+      filled: true,
+      fillColor: const Color(0xFF181B26),
+      border: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: BorderSide.none,
+      ),
+      enabledBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(
+          color: Color(0xFF292D3A),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(
+          color: Colors.blue,
+          width: 1.5,
+        ),
+      ),
+    );
+  }
+
+  Widget label(String text) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 7),
+      child: Text(
+        text,
+        style: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text(
           'Telefon bejertmek',
-          style: TextStyle(fontWeight: FontWeight.bold),
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
         ),
         backgroundColor: const Color(0xFF0F1018),
       ),
@@ -429,7 +492,9 @@ class _RepairPageState extends State<RepairPage> {
 
               const Text(
                 'Maglumatlary dolduryp arzany iberiň.',
-                style: TextStyle(color: Colors.grey),
+                style: TextStyle(
+                  color: Colors.grey,
+                ),
               ),
 
               const SizedBox(height: 22),
@@ -443,7 +508,8 @@ class _RepairPageState extends State<RepairPage> {
                   Icons.person_outline,
                 ),
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null ||
+                      value.trim().isEmpty) {
                     return 'Adyňyzy ýazyň';
                   }
                   return null;
@@ -462,7 +528,8 @@ class _RepairPageState extends State<RepairPage> {
                   Icons.phone_outlined,
                 ),
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null ||
+                      value.trim().isEmpty) {
                     return 'Telefon belgiňizi ýazyň';
                   }
                   return null;
@@ -480,7 +547,8 @@ class _RepairPageState extends State<RepairPage> {
                   Icons.smartphone,
                 ),
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null ||
+                      value.trim().isEmpty) {
                     return 'Telefon modelini ýazyň';
                   }
                   return null;
@@ -524,7 +592,8 @@ class _RepairPageState extends State<RepairPage> {
                   Icons.description_outlined,
                 ),
                 validator: (value) {
-                  if (value == null || value.trim().isEmpty) {
+                  if (value == null ||
+                      value.trim().isEmpty) {
                     return 'Problema barada ýazyň';
                   }
                   return null;
@@ -562,7 +631,7 @@ class _RepairPageState extends State<RepairPage> {
                     ),
                     SizedBox(height: 8),
                     Text(
-                      '📷 Telefonuň suratyny goşmak',
+                      '📷 Telefonuň suratyny goş',
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 16,
@@ -570,9 +639,12 @@ class _RepairPageState extends State<RepairPage> {
                     ),
                     SizedBox(height: 5),
                     Text(
-                      'Surat goşmak funksiýasyny indiki ädimde goşarys.',
+                      'Surat goşmak funksiýasyny '
+                      'indiki ädimde goşarys.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(color: Colors.grey),
+                      style: TextStyle(
+                        color: Colors.grey,
+                      ),
                     ),
                   ],
                 ),
@@ -606,48 +678,6 @@ class _RepairPageState extends State<RepairPage> {
               const SizedBox(height: 30),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget label(String text) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 7),
-      child: Text(
-        text,
-        style: const TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 15,
-        ),
-      ),
-    );
-  }
-
-  InputDecoration input(
-    String hint,
-    IconData icon,
-  ) {
-    return InputDecoration(
-      hintText: hint,
-      prefixIcon: Icon(icon),
-      filled: true,
-      fillColor: const Color(0xFF181B26),
-      border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide.none,
-      ),
-      enabledBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(
-          color: Color(0xFF292D3A),
-        ),
-      ),
-      focusedBorder: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(
-          color: Colors.blue,
-          width: 1.5,
         ),
       ),
     );
