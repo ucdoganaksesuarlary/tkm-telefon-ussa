@@ -19,7 +19,6 @@ class TkmTelefonUssa extends StatelessWidget {
           seedColor: Colors.blue,
           brightness: Brightness.dark,
         ),
-        fontFamily: 'Arial',
       ),
       home: const HomePage(),
     );
@@ -29,18 +28,23 @@ class TkmTelefonUssa extends StatelessWidget {
 class HomePage extends StatelessWidget {
   const HomePage({super.key});
 
+  void openRepair(BuildContext context) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => const RepairPage(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFF0F1018),
-        elevation: 0,
         title: const Text(
           'TKM TELEFON USSA',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         actions: [
           IconButton(
@@ -61,10 +65,8 @@ class HomePage extends StatelessWidget {
                 fontWeight: FontWeight.bold,
               ),
             ),
-
             const SizedBox(height: 20),
 
-            // Esasy arza bölümi
             Container(
               width: double.infinity,
               padding: const EdgeInsets.all(20),
@@ -72,8 +74,8 @@ class HomePage extends StatelessWidget {
                 borderRadius: BorderRadius.circular(22),
                 gradient: const LinearGradient(
                   colors: [
-                    Color(0xFF0066FF),
-                    Color(0xFF003B99),
+                    Color(0xFF087CFF),
+                    Color(0xFF0643A5),
                   ],
                 ),
               ),
@@ -81,40 +83,28 @@ class HomePage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Icon(
-                    Icons.build_circle_outlined,
+                    Icons.build_circle,
                     size: 50,
                     color: Colors.white,
                   ),
-                  const SizedBox(height: 12),
+                  const SizedBox(height: 10),
                   const Text(
                     'TELEFON BEJERTMEK',
                     style: TextStyle(
-                      fontSize: 22,
+                      fontSize: 21,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
                   const SizedBox(height: 6),
                   const Text(
                     'Arzaňyzy aňsat we çalt iberiň!',
-                    style: TextStyle(fontSize: 15),
                   ),
                   const SizedBox(height: 18),
                   ElevatedButton(
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RepairRequestPage(),
-                        ),
-                      );
-                    },
+                    onPressed: () => openRepair(context),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Colors.blue,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 22,
-                        vertical: 13,
-                      ),
                     ),
                     child: const Text(
                       'Arza ber →',
@@ -145,74 +135,57 @@ class HomePage extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               crossAxisSpacing: 12,
               mainAxisSpacing: 12,
-              childAspectRatio: 1.35,
+              childAspectRatio: 1.3,
               children: [
-                _menuButton(
+                serviceButton(
                   context,
                   Icons.build,
                   'Telefon bejertmek',
-                  () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => const RepairRequestPage(),
-                      ),
-                    );
-                  },
+                  () => openRepair(context),
                 ),
-                _menuButton(
+                serviceButton(
                   context,
                   Icons.receipt_long,
                   'Arzalarym',
-                  () {
-                    _showMessage(context, 'Arzalarym bölümi ýakynda!');
-                  },
+                  () => message(context, 'Arzalarym ýakynda goşular.'),
                 ),
-                _menuButton(
+                serviceButton(
                   context,
                   Icons.payments,
                   'Bahalar',
-                  () {
-                    _showMessage(context, 'Bahalar bölümi ýakynda!');
-                  },
+                  () => message(context, 'Bahalar ýakynda goşular.'),
                 ),
-                _menuButton(
+                serviceButton(
                   context,
-                  Icons.shopping_cart_outlined,
+                  Icons.shopping_cart,
                   'Aksessuarlar',
-                  () {
-                    _showMessage(
-                      context,
-                      'Aksessuarlar bölümi ýakynda!',
-                    );
-                  },
+                  () => message(
+                    context,
+                    'Aksessuarlar ýakynda goşular.',
+                  ),
                 ),
-                _menuButton(
+                serviceButton(
                   context,
                   Icons.phone,
                   'Habarlaşmak',
-                  () {
-                    _showMessage(
-                      context,
-                      'Habarlaşmak bölümi ýakynda!',
-                    );
-                  },
+                  () => message(
+                    context,
+                    'Habarlaşmak bölümi ýakynda goşular.',
+                  ),
                 ),
-                _menuButton(
+                serviceButton(
                   context,
-                  Icons.location_on_outlined,
+                  Icons.location_on,
                   'Biziň salgymyz',
-                  () {
-                    _showMessage(
-                      context,
-                      'Salgymyz ýakynda goşular!',
-                    );
-                  },
+                  () => message(
+                    context,
+                    'Salgy ýakynda goşular.',
+                  ),
                 ),
               ],
             ),
 
-            const SizedBox(height: 28),
+            const SizedBox(height: 25),
 
             const Text(
               'Nähili işleýär?',
@@ -224,10 +197,10 @@ class HomePage extends StatelessWidget {
 
             const SizedBox(height: 15),
 
-            _step(1, 'Maglumatlary doldur'),
-            _step(2, 'Surat / wideo goş'),
-            _step(3, 'Arzany iber'),
-            _step(4, 'Biz habar bereris'),
+            step(1, 'Maglumatlary doldur'),
+            step(2, 'Telefon meseläňizi ýaz'),
+            step(3, 'Arzany iber'),
+            step(4, 'Biz habar bereris'),
 
             const SizedBox(height: 20),
 
@@ -237,45 +210,36 @@ class HomePage extends StatelessWidget {
               decoration: BoxDecoration(
                 color: const Color(0xFF181B26),
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(
-                  color: Colors.blueAccent,
-                ),
               ),
               child: const Row(
                 children: [
                   Icon(
                     Icons.verified_user,
-                    color: Colors.blueAccent,
+                    color: Colors.blue,
                     size: 35,
                   ),
-                  SizedBox(width: 14),
+                  SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       'Ynamly hyzmat we professional telefon bejergisi.',
-                      style: TextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                      ),
                     ),
                   ),
                 ],
               ),
             ),
 
-            const SizedBox(height: 30),
+            const SizedBox(height: 25),
           ],
         ),
       ),
-
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: const Color(0xFF15161E),
+      bottomNavigationBar: const BottomNavigationBar(
+        backgroundColor: Color(0xFF15161E),
         selectedItemColor: Colors.blue,
         unselectedItemColor: Colors.grey,
-        currentIndex: 0,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home_outlined),
+            icon: Icon(Icons.home),
             label: 'Baş sahypa',
           ),
           BottomNavigationBarItem(
@@ -283,15 +247,15 @@ class HomePage extends StatelessWidget {
             label: 'Arzalar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.add_circle_outline),
+            icon: Icon(Icons.add_circle),
             label: 'Arza',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.payments_outlined),
+            icon: Icon(Icons.payments),
             label: 'Bahalar',
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person_outline),
+            icon: Icon(Icons.person),
             label: 'Profil',
           ),
         ],
@@ -299,17 +263,16 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  static Widget _menuButton(
+  Widget serviceButton(
     BuildContext context,
     IconData icon,
-    String text,
-    VoidCallback onPressed,
+    String title,
+    VoidCallback action,
   ) {
     return InkWell(
-      onTap: onPressed,
+      onTap: action,
       borderRadius: BorderRadius.circular(18),
       child: Container(
-        padding: const EdgeInsets.all(14),
         decoration: BoxDecoration(
           color: const Color(0xFF181B26),
           borderRadius: BorderRadius.circular(18),
@@ -324,7 +287,7 @@ class HomePage extends StatelessWidget {
             ),
             const SizedBox(height: 8),
             Text(
-              text,
+              title,
               textAlign: TextAlign.center,
               style: const TextStyle(
                 fontWeight: FontWeight.bold,
@@ -336,14 +299,14 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  static Widget _step(int number, String text) {
+  Widget step(int number, String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
       child: Row(
         children: [
           CircleAvatar(
-            radius: 17,
             backgroundColor: Colors.blue,
+            radius: 17,
             child: Text(
               '$number',
               style: const TextStyle(
@@ -352,60 +315,43 @@ class HomePage extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Text(
-            text,
-            style: const TextStyle(fontSize: 16),
-          ),
+          Text(text),
         ],
       ),
     );
   }
 
-  static void _showMessage(
-    BuildContext context,
-    String message,
-  ) {
+  void message(BuildContext context, String text) {
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+      SnackBar(content: Text(text)),
     );
   }
 }
 
 
-// ======================================================
-// TELEFON BEJERTMEK — ARZA FORMASY
-// ======================================================
+// =====================================================
+// TELEFON BEJERTMEK
+// =====================================================
 
-class RepairRequestPage extends StatefulWidget {
-  const RepairRequestPage({super.key});
+class RepairPage extends StatefulWidget {
+  const RepairPage({super.key});
 
   @override
-  State<RepairRequestPage> createState() =>
-      _RepairRequestPageState();
+  State<RepairPage> createState() => _RepairPageState();
 }
 
-class _RepairRequestPageState
-    extends State<RepairRequestPage> {
-  final _formKey = GlobalKey<FormState>();
+class _RepairPageState extends State<RepairPage> {
+  final formKey = GlobalKey<FormState>();
 
-  final TextEditingController nameController =
-      TextEditingController();
+  final nameController = TextEditingController();
+  final phoneController = TextEditingController();
+  final modelController = TextEditingController();
+  final problemController = TextEditingController();
+  final noteController = TextEditingController();
 
-  final TextEditingController phoneController =
-      TextEditingController();
+  String problem = 'Ekran döwüldi';
 
-  final TextEditingController modelController =
-      TextEditingController();
-
-  final TextEditingController problemController =
-      TextEditingController();
-
-  final TextEditingController noteController =
-      TextEditingController();
-
-  String selectedProblem = 'Ekran döwüldi';
-
-  final List<String> problems = [
+  final problems = [
     'Ekran döwüldi',
     'Sensor işlemeýär',
     'Zarýad almaýar',
@@ -427,7 +373,7 @@ class _RepairRequestPageState
   }
 
   void sendRequest() {
-    if (!_formKey.currentState!.validate()) {
+    if (!formKey.currentState!.validate()) {
       return;
     }
 
@@ -460,14 +406,12 @@ class _RepairRequestPageState
       appBar: AppBar(
         title: const Text(
           'Telefon bejertmek',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
         backgroundColor: const Color(0xFF0F1018),
       ),
       body: Form(
-        key: _formKey,
+        key: formKey,
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(18),
           child: Column(
@@ -484,19 +428,17 @@ class _RepairRequestPageState
               const SizedBox(height: 8),
 
               const Text(
-                'Aşakdaky maglumatlary dolduryň.',
-                style: TextStyle(
-                  color: Colors.grey,
-                ),
+                'Maglumatlary dolduryp arzany iberiň.',
+                style: TextStyle(color: Colors.grey),
               ),
 
               const SizedBox(height: 22),
 
-              _label('Adyňyz'),
+              label('Adyňyz'),
 
               TextFormField(
                 controller: nameController,
-                decoration: _decoration(
+                decoration: input(
                   'Adyňyzy ýazyň',
                   Icons.person_outline,
                 ),
@@ -510,12 +452,12 @@ class _RepairRequestPageState
 
               const SizedBox(height: 16),
 
-              _label('Telefon belgiňiz'),
+              label('Telefon belgiňiz'),
 
               TextFormField(
                 controller: phoneController,
                 keyboardType: TextInputType.phone,
-                decoration: _decoration(
+                decoration: input(
                   'Telefon belgiňiz',
                   Icons.phone_outlined,
                 ),
@@ -529,13 +471,13 @@ class _RepairRequestPageState
 
               const SizedBox(height: 16),
 
-              _label('Telefon modeli'),
+              label('Telefon modeli'),
 
               TextFormField(
                 controller: modelController,
-                decoration: _decoration(
+                decoration: input(
                   'Meselem: iPhone 13 Pro',
-                  Icons.smartphone_outlined,
+                  Icons.smartphone,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
@@ -547,24 +489,24 @@ class _RepairRequestPageState
 
               const SizedBox(height: 16),
 
-              _label('Näsazlyk'),
+              label('Näsazlyk'),
 
               DropdownButtonFormField<String>(
-                initialValue: selectedProblem,
-                decoration: _decoration(
+                value: problem,
+                decoration: input(
                   'Näsazlygy saýlaň',
                   Icons.build_outlined,
                 ),
-                items: problems.map((problem) {
-                  return DropdownMenuItem(
-                    value: problem,
-                    child: Text(problem),
+                items: problems.map((item) {
+                  return DropdownMenuItem<String>(
+                    value: item,
+                    child: Text(item),
                   );
                 }).toList(),
                 onChanged: (value) {
                   if (value != null) {
                     setState(() {
-                      selectedProblem = value;
+                      problem = value;
                     });
                   }
                 },
@@ -572,18 +514,18 @@ class _RepairRequestPageState
 
               const SizedBox(height: 16),
 
-              _label('Näsazlygyň düşündirişi'),
+              label('Problema barada düşündiriş'),
 
               TextFormField(
                 controller: problemController,
                 maxLines: 4,
-                decoration: _decoration(
+                decoration: input(
                   'Telefonda näme problema bar?',
                   Icons.description_outlined,
                 ),
                 validator: (value) {
                   if (value == null || value.trim().isEmpty) {
-                    return 'Problema barada ýazmagyňyzy haýyş edýäris';
+                    return 'Problema barada ýazyň';
                   }
                   return null;
                 },
@@ -591,20 +533,19 @@ class _RepairRequestPageState
 
               const SizedBox(height: 16),
 
-              _label('Goşmaça bellik'),
+              label('Goşmaça bellik'),
 
               TextFormField(
                 controller: noteController,
                 maxLines: 3,
-                decoration: _decoration(
-                  'Goşmaça maglumat bar bolsa ýazyň',
+                decoration: input(
+                  'Goşmaça maglumat',
                   Icons.note_alt_outlined,
                 ),
               ),
 
-              const SizedBox(height: 22),
+              const SizedBox(height: 20),
 
-              // Surat goşmak bölümi
               Container(
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
@@ -612,28 +553,26 @@ class _RepairRequestPageState
                   color: const Color(0xFF181B26),
                   borderRadius: BorderRadius.circular(18),
                 ),
-                child: Column(
+                child: const Column(
                   children: [
-                    const Icon(
+                    Icon(
                       Icons.photo_camera_outlined,
-                      size: 45,
                       color: Colors.blue,
+                      size: 45,
                     ),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Telefonuň suratyny goş',
+                    SizedBox(height: 8),
+                    Text(
+                      '📷 Telefonuň suratyny goşmak',
                       style: TextStyle(
-                        fontSize: 17,
                         fontWeight: FontWeight.bold,
+                        fontSize: 16,
                       ),
                     ),
-                    const SizedBox(height: 6),
-                    const Text(
-                      'Bu funksiýany indiki ädimde goşarys.',
+                    SizedBox(height: 5),
+                    Text(
+                      'Surat goşmak funksiýasyny indiki ädimde goşarys.',
                       textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: Colors.grey,
-                      ),
+                      style: TextStyle(color: Colors.grey),
                     ),
                   ],
                 ),
@@ -672,7 +611,7 @@ class _RepairRequestPageState
     );
   }
 
-  Widget _label(String text) {
+  Widget label(String text) {
     return Padding(
       padding: const EdgeInsets.only(bottom: 7),
       child: Text(
@@ -685,7 +624,7 @@ class _RepairRequestPageState
     );
   }
 
-  InputDecoration _decoration(
+  InputDecoration input(
     String hint,
     IconData icon,
   ) {
@@ -701,4 +640,16 @@ class _RepairRequestPageState
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(
-          color: Col
+          color: Color(0xFF292D3A),
+        ),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(14),
+        borderSide: const BorderSide(
+          color: Colors.blue,
+          width: 1.5,
+        ),
+      ),
+    );
+  }
+}
