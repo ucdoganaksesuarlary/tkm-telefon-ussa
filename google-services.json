@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "841923424510",
+    "project_id": "tkm-telefon-ussa",
+    "storage_bucket": "tkm-telefon-ussa.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:841923424510:android:86a9866d5ee902356375af",
+        "android_client_info": {
+          "package_name": "com.example.tkm_telefon_ussa"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBHOzNGXsbutbmu6N894rC5HkCqfaKjGWc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
