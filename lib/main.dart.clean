@@ -1,0 +1,1166 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+
+const Color bg = Color(0xFF070B12);
+const Color card = Color(0xFF111A27);
+const Color blue = Color(0xFF159BFF);
+const Color cyan = Color(0xFF62D5FF);
+const Color muted = Color(0xFF9AA9BB);
+const Color green = Color(0xFF22D27A);
+
+void main() {
+  runApp(const TkmApp());
+}
+
+class TkmApp extends StatelessWidget {
+  const TkmApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'TKM TELEFON USSA',
+      theme: ThemeData(
+        brightness: Brightness.dark,
+        scaffoldBackgroundColor: bg,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: blue,
+          brightness: Brightness.dark,
+        ),
+        useMaterial3: true,
+      ),
+      home: const MainPage(),
+    );
+  }
+}
+
+class MainPage extends StatefulWidget {
+  const MainPage({super.key});
+
+  @override
+  State<MainPage> createState() => _MainPageState();
+}
+
+class _MainPageState extends State<MainPage> {
+  int tab = 0;
+
+  final List<Widget> pages = const <Widget>[
+    HomePage(),
+    RequestsPage(),
+    RepairPage(),
+    PricesPage(),
+    ProfilePage(),
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: IndexedStack(
+        index: tab,
+        children: pages,
+      ),
+      bottomNavigationBar: NavigationBar(
+        height: 72,
+        backgroundColor: const Color(0xFF0B111A),
+        indicatorColor: const Color(0xFF173653),
+        selectedIndex: tab,
+        onDestinationSelected: (int value) {
+          setState(() {
+            tab = value;
+          });
+        },
+        destinations: const <NavigationDestination>[
+          NavigationDestination(
+            icon: Icon(Icons.home_outlined),
+            selectedIcon: Icon(Icons.home_rounded, color: cyan),
+            label: 'Baş sahypa',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.assignment_outlined),
+            selectedIcon: Icon(Icons.assignment_rounded, color: cyan),
+            label: 'Arzalar',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.add_circle_outline),
+            selectedIcon: Icon(Icons.add_circle_rounded, color: cyan),
+            label: 'Arza',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.payments_outlined),
+            selectedIcon: Icon(Icons.payments_rounded, color: cyan),
+            label: 'Bahalar',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.person_outline),
+            selectedIcon: Icon(Icons.person_rounded, color: cyan),
+            label: 'Profil',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  void openPage(BuildContext context, Widget page) {
+    Navigator.push(
+      context,
+      MaterialPageRoute<void>(
+        builder: (_) => page,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: ListView(
+        padding: const EdgeInsets.only(bottom: 20),
+        children: <Widget>[
+          const Header(),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(18, 0, 18, 10),
+            child: Row(
+              children: <Widget>[
+                Icon(Icons.circle, size: 8, color: green),
+                SizedBox(width: 7),
+                Expanded(
+                  child: Text(
+                    'Siziň telefon hyzmatlaryňyz bizde!',
+                    style: TextStyle(fontSize: 12),
+                  ),
+                ),
+                Text(
+                  '7/24',
+                  style: TextStyle(
+                    color: cyan,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          RepairBanner(
+            onTap: () => openPage(context, const RepairPage()),
+          ),
+          const Padding(
+            padding: EdgeInsets.fromLTRB(18, 20, 18, 11),
+            child: Text(
+              'Hyzmatlar',
+              style: TextStyle(
+                fontSize: 23,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 14),
+            child: GridView.count(
+              crossAxisCount: 2,
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              crossAxisSpacing: 11,
+              mainAxisSpacing: 11,
+              childAspectRatio: .98,
+              children: <Widget>[
+                ServiceCard(
+                  icon: Icons.phone_android_rounded,
+                  title: 'Telefon bejertmek',
+                  subtitle: 'Çalt we ygtybarly',
+                  onTap: () => openPage(context, const RepairPage()),
+                ),
+                ServiceCard(
+                  icon: Icons.assignment_rounded,
+                  title: 'Arzalarym',
+                  subtitle: 'Arzalary görüň',
+                  onTap: () => openPage(context, const RequestsPage()),
+                ),
+                ServiceCard(
+                  icon: Icons.payments_rounded,
+                  title: 'Bahalar',
+                  subtitle: 'Hyzmat bahalary',
+                  onTap: () => openPage(context, const PricesPage()),
+                ),
+                ServiceCard(
+                  icon: Icons.shopping_cart_rounded,
+                  title: 'Aksessuarlar',
+                  subtitle: 'Harytlar',
+                  onTap: () => openPage(context, const AccessoriesPage()),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(height: 14),
+          const ContactCard(),
+        ],
+      ),
+    );
+  }
+}
+
+class Header extends StatelessWidget {
+  const Header({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 15, 16, 9),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 66,
+            height: 66,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              gradient: const LinearGradient(
+                colors: <Color>[
+                  Color(0xFF174A70),
+                  Color(0xFF09121D),
+                ],
+              ),
+              border: Border.all(color: cyan, width: 2),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                  color: blue.withOpacity(.30),
+                  blurRadius: 18,
+                ),
+              ],
+            ),
+            child: const Stack(
+              alignment: Alignment.center,
+              children: <Widget>[
+                Icon(Icons.phone_iphone_rounded, size: 38),
+                Positioned(
+                  right: 7,
+                  bottom: 7,
+                  child: Icon(
+                    Icons.build_rounded,
+                    size: 23,
+                    color: cyan,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const SizedBox(width: 11),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'TKM',
+                  style: TextStyle(
+                    fontSize: 29,
+                    height: .9,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                Text(
+                  'TELEFON USSA',
+                  style: TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w900,
+                    color: cyan,
+                  ),
+                ),
+                Text(
+                  'Ynamly hyzmat • 7/24',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: muted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Container(
+            width: 43,
+            height: 43,
+            decoration: BoxDecoration(
+              color: card,
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: const Color(0xFF21445F),
+              ),
+            ),
+            child: const Icon(Icons.notifications_none_rounded),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class RepairBanner extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const RepairBanner({
+    super.key,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 225,
+      margin: const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(26),
+        gradient: const LinearGradient(
+          colors: <Color>[
+            Color(0xFF0B62BC),
+            Color(0xFF087CF2),
+            Color(0xFF092F59),
+          ],
+        ),
+        border: Border.all(
+          color: const Color(0xFF32B9FF),
+        ),
+        boxShadow: <BoxShadow>[
+          BoxShadow(
+            color: blue.withOpacity(.22),
+            blurRadius: 25,
+          ),
+        ],
+      ),
+      child: Stack(
+        children: <Widget>[
+          Positioned(
+            right: -25,
+            bottom: -35,
+            child: Icon(
+              Icons.phone_iphone_rounded,
+              size: 180,
+              color: Colors.white.withOpacity(.11),
+            ),
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              const Text(
+                'PROFESSIONAL HYZMAT',
+                style: TextStyle(
+                  fontSize: 9,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'TELEFON',
+                style: TextStyle(
+                  fontSize: 29,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const Text(
+                'BEJERTMEK',
+                style: TextStyle(
+                  fontSize: 29,
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              const SizedBox(height: 4),
+              const Text(
+                'Arzaňyzy aňsat we çalt iberiň!',
+                style: TextStyle(fontSize: 13),
+              ),
+              const Spacer(),
+              ElevatedButton.icon(
+                onPressed: onTap,
+                icon: const Icon(
+                  Icons.arrow_forward_rounded,
+                  size: 18,
+                ),
+                label: const Text(
+                  'Arza ber',
+                  style: TextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.white,
+                  foregroundColor: blue,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 18,
+                    vertical: 11,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(30),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class ServiceCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String subtitle;
+  final VoidCallback onTap;
+
+  const ServiceCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.subtitle,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(22),
+      child: Container(
+        padding: const EdgeInsets.all(11),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(22),
+          gradient: const LinearGradient(
+            colors: <Color>[
+              Color(0xFF132B45),
+              Color(0xFF0A1522),
+            ],
+          ),
+          border: Border.all(
+            color: const Color(0xFF1A4D73),
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              width: 68,
+              height: 68,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: const Color(0xFF0B3555),
+                border: Border.all(
+                  color: cyan.withOpacity(.55),
+                ),
+              ),
+              child: Icon(
+                icon,
+                size: 40,
+                color: cyan,
+              ),
+            ),
+            const SizedBox(height: 9),
+            Text(
+              title,
+              textAlign: TextAlign.center,
+              style: const TextStyle(
+                fontSize: 13.5,
+                fontWeight: FontWeight.w900,
+              ),
+            ),
+            const SizedBox(height: 3),
+            Text(
+              subtitle,
+              style: const TextStyle(
+                fontSize: 10,
+                color: muted,
+              ),
+            ),
+            const SizedBox(height: 4),
+            const Icon(
+              Icons.arrow_forward_rounded,
+              size: 16,
+              color: cyan,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class ContactCard extends StatelessWidget {
+  const ContactCard({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 14),
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: const Color(0xFF07201D),
+        borderRadius: BorderRadius.circular(19),
+        border: Border.all(
+          color: const Color(0xFF14685D),
+        ),
+      ),
+      child: Row(
+        children: <Widget>[
+          const CircleAvatar(
+            radius: 24,
+            backgroundColor: green,
+            child: Icon(
+              Icons.chat_rounded,
+              color: Colors.white,
+            ),
+          ),
+          const SizedBox(width: 10),
+          const Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  'WhatsApp arkaly habarlaşyň',
+                  style: TextStyle(
+                    fontSize: 12.5,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                SizedBox(height: 3),
+                Text(
+                  '+90 501 687 3001',
+                  style: TextStyle(
+                    fontSize: 10,
+                    color: muted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          FilledButton(
+            onPressed: () {
+              Clipboard.setData(
+                const ClipboardData(
+                  text: '+905016873001',
+                ),
+              );
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Nomeri göçürildi'),
+                ),
+              );
+            },
+            style: FilledButton.styleFrom(
+              backgroundColor: green,
+            ),
+            child: const Text('Göçür'),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class RepairPage extends StatefulWidget {
+  const RepairPage({super.key});
+
+  @override
+  State<RepairPage> createState() => _RepairPageState();
+}
+
+class _RepairPageState extends State<RepairPage> {
+  final TextEditingController model = TextEditingController();
+  final TextEditingController problem = TextEditingController();
+  final TextEditingController name = TextEditingController();
+  final TextEditingController phone = TextEditingController();
+
+  void send() {
+    if (model.text.trim().isEmpty ||
+        problem.text.trim().isEmpty ||
+        name.text.trim().isEmpty ||
+        phone.text.trim().isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Ähli meýdançany dolduryň'),
+        ),
+      );
+      return;
+    }
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Arzaňyz üstünlikli iberildi!'),
+        backgroundColor: blue,
+      ),
+    );
+
+    model.clear();
+    problem.clear();
+    name.clear();
+    phone.clear();
+  }
+
+  @override
+  void dispose() {
+    model.dispose();
+    problem.dispose();
+    name.dispose();
+    phone.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Telefon bejertmek',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(17),
+        children: <Widget>[
+          const InfoCard(
+            icon: Icons.build_rounded,
+            title: 'Arza beriň',
+            text: 'Telefon meseläňizi ýazyp, ussa iberiň.',
+          ),
+          const SizedBox(height: 14),
+          Field(
+            controller: model,
+            label: 'Telefon modeli',
+            hint: 'Mysal: iPhone 13 Pro',
+            icon: Icons.phone_android_rounded,
+          ),
+          const SizedBox(height: 10),
+          Field(
+            controller: problem,
+            label: 'Näsazlyk / mesele',
+            hint: 'Näme problema bar?',
+            icon: Icons.report_problem_rounded,
+            maxLines: 4,
+          ),
+          const SizedBox(height: 10),
+          Field(
+            controller: name,
+            label: 'Adyňyz',
+            hint: 'Adyňyzy ýazyň',
+            icon: Icons.person_outline_rounded,
+          ),
+          const SizedBox(height: 10),
+          Field(
+            controller: phone,
+            label: 'Telefon belgiňiz',
+            hint: '+90 ...',
+            icon: Icons.phone_rounded,
+            type: TextInputType.phone,
+          ),
+          const SizedBox(height: 16),
+          SizedBox(
+            height: 52,
+            child: FilledButton.icon(
+              onPressed: send,
+              icon: const Icon(Icons.send_rounded),
+              label: const Text(
+                'Arzany iber',
+                style: TextStyle(
+                  fontWeight: FontWeight.w900,
+                ),
+              ),
+              style: FilledButton.styleFrom(
+                backgroundColor: blue,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class Field extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final String hint;
+  final IconData icon;
+  final int maxLines;
+  final TextInputType? type;
+
+  const Field({
+    super.key,
+    required this.controller,
+    required this.label,
+    required this.hint,
+    required this.icon,
+    this.maxLines = 1,
+    this.type,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      controller: controller,
+      maxLines: maxLines,
+      keyboardType: type,
+      decoration: InputDecoration(
+        labelText: label,
+        hintText: hint,
+        prefixIcon: Icon(
+          icon,
+          color: cyan,
+        ),
+        filled: true,
+        fillColor: const Color(0xFF0B1826),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: const BorderSide(
+            color: Color(0xFF173B5B),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class RequestsPage extends StatelessWidget {
+  const RequestsPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SimplePage(
+      title: 'Arzalarym',
+      icon: Icons.assignment_rounded,
+      text: 'Berlen arzalaryňyz şu ýerde görkeziler.',
+      child: EmptyBox(),
+    );
+  }
+}
+
+class PricesPage extends StatelessWidget {
+  const PricesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const List<String> items = <String>[
+      'Ekran çalyşmak',
+      'Batareýa çalyşmak',
+      'Zarýad soketi',
+      'Kamera bejergisi',
+      'Programma üpjünçiligi',
+    ];
+
+    return SimplePage(
+      title: 'Bahalar',
+      icon: Icons.payments_rounded,
+      text: 'Takyk baha telefon modeline görä kesgitlenýär.',
+      child: Column(
+        children: items
+            .map(
+              (String item) => Container(
+                width: double.infinity,
+                margin: const EdgeInsets.only(bottom: 9),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: card,
+                  borderRadius: BorderRadius.circular(16),
+                  border: Border.all(
+                    color: const Color(0xFF173D60),
+                  ),
+                ),
+                child: Row(
+                  children: <Widget>[
+                    const Icon(
+                      Icons.check_circle_rounded,
+                      color: cyan,
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Text(
+                        item,
+                        style: const TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                    ),
+                    const Text(
+                      'Modeline görä',
+                      style: TextStyle(
+                        fontSize: 9.5,
+                        color: muted,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            )
+            .toList(),
+      ),
+    );
+  }
+}
+
+class AccessoriesPage extends StatelessWidget {
+  const AccessoriesPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    const List<Map<String, Object>> items = <Map<String, Object>>[
+      <String, Object>{
+        'name': 'Gorag aýnasy',
+        'icon': Icons.phone_iphone_rounded,
+      },
+      <String, Object>{
+        'name': 'Telefon çehi',
+        'icon': Icons.phone_android_rounded,
+      },
+      <String, Object>{
+        'name': 'Zarýadnik / kabel',
+        'icon': Icons.power_rounded,
+      },
+      <String, Object>{
+        'name': 'Bluetooth nauşnik',
+        'icon': Icons.headphones_rounded,
+      },
+      <String, Object>{
+        'name': 'Powerbank',
+        'icon': Icons.battery_charging_full_rounded,
+      },
+      <String, Object>{
+        'name': 'Kolonka',
+        'icon': Icons.speaker_rounded,
+      },
+    ];
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Aksessuarlar',
+          style: TextStyle(
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+      body: GridView.builder(
+        padding: const EdgeInsets.all(15),
+        itemCount: items.length,
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: 2,
+          crossAxisSpacing: 11,
+          mainAxisSpacing: 11,
+          childAspectRatio: .94,
+        ),
+        itemBuilder: (BuildContext context, int index) {
+          final String name = items[index]['name']! as String;
+          final IconData icon = items[index]['icon']! as IconData;
+
+          return InkWell(
+            onTap: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text('$name barada habarlaşyň'),
+                ),
+              );
+            },
+            borderRadius: BorderRadius.circular(20),
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                gradient: const LinearGradient(
+                  colors: <Color>[
+                    Color(0xFF132A43),
+                    Color(0xFF091522),
+                  ],
+                ),
+                border: Border.all(
+                  color: const Color(0xFF17466F),
+                ),
+              ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Icon(
+                    icon,
+                    size: 47,
+                    color: cyan,
+                  ),
+                  const SizedBox(height: 10),
+                  Text(
+                    name,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w900,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  const Text(
+                    'Haryt barada sora',
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: muted,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class ProfilePage extends StatelessWidget {
+  const ProfilePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const SimplePage(
+      title: 'Profil',
+      icon: Icons.person_rounded,
+      text: 'TKM Telefon Ussa • Ynamly hyzmat • 7/24',
+      child: Column(
+        children: <Widget>[
+          InfoRow(
+            icon: Icons.phone_rounded,
+            title: 'Habarlaşmak',
+            value: '+90 501 687 3001',
+          ),
+          InfoRow(
+            icon: Icons.access_time_rounded,
+            title: 'Iş wagty',
+            value: '7/24 hyzmatda',
+          ),
+          InfoRow(
+            icon: Icons.verified_rounded,
+            title: 'Hyzmat',
+            value: 'Ynamly we çalt',
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class SimplePage extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final String text;
+  final Widget child;
+
+  const SimplePage({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.text,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          title,
+          style: const TextStyle(
+            fontWeight: FontWeight.w900,
+          ),
+        ),
+      ),
+      body: ListView(
+        padding: const EdgeInsets.all(17),
+        children: <Widget>[
+          InfoCard(
+            icon: icon,
+            title: title,
+            text: text,
+          ),
+          const SizedBox(height: 14),
+          child,
+        ],
+      ),
+    );
+  }
+}
+
+class InfoCard extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String text;
+
+  const InfoCard({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.text,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(20),
+        gradient: const LinearGradient(
+          colors: <Color>[
+            Color(0xFF122B46),
+            Color(0xFF091624),
+          ],
+        ),
+        border: Border.all(
+          color: const Color(0xFF174C78),
+        ),
+      ),
+      child: Row(
+        children: <Widget>[
+          Container(
+            width: 52,
+            height: 52,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: const Color(0xFF0B3659),
+              border: Border.all(color: blue),
+            ),
+            child: Icon(
+              icon,
+              color: cyan,
+            ),
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 17,
+                    fontWeight: FontWeight.w900,
+                  ),
+                ),
+                const SizedBox(height: 3),
+                Text(
+                  text,
+                  style: const TextStyle(
+                    fontSize: 10.5,
+                    color: muted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class EmptyBox extends StatelessWidget {
+  const EmptyBox({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.all(28),
+      decoration: BoxDecoration(
+        color: card,
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(
+          color: const Color(0xFF173D60),
+        ),
+      ),
+      child: const Column(
+        children: <Widget>[
+          Icon(
+            Icons.inbox_rounded,
+            size: 54,
+            color: Color(0xFF52708B),
+          ),
+          SizedBox(height: 10),
+          Text(
+            'Häzirlikçe arza ýok',
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w900,
+            ),
+          ),
+          SizedBox(height: 5),
+          Text(
+            'Täze arza bermek üçin “Arza” bölümine giriň.',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: 11,
+              color: muted,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class InfoRow extends StatelessWidget {
+  final IconData icon;
+  final String title;
+  final String value;
+
+  const InfoRow({
+    super.key,
+    required this.icon,
+    required this.title,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 9),
+      padding: const EdgeInsets.all(13),
+      decoration: BoxDecoration(
+        color: card,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(
+          color: const Color(0xFF173D60),
+        ),
+      ),
+      child: Row(
+        children: <Widget>[
+          Icon(
+            icon,
+            color: cyan,
+          ),
+          const SizedBox(width: 11),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  value,
+                  style: const TextStyle(
+                    fontSize: 10.5,
+                    color: muted,
+                  ),
+                ),
+              ],
+            ),
+          ),
+          const Icon(
+            Icons.chevron_right_rounded,
+            color: cyan,
+          ),
+        ],
+      ),
+    );
+  }
+}
