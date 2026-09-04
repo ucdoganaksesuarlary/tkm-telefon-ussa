@@ -1,1 +1,43 @@
+name: Build Android APK
 
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Repository-ni al
+        uses: actions/checkout@v4
+
+      - name: Flutter gur
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+
+      - name: Flutter taslamasyny döret
+        run: |
+          flutter create --project-name tkm_telefon_ussa build_app
+
+      - name: Öz kodumyzy goý
+        run: |
+          cp lib/main.dart build_app/lib/main.dart
+          cp pubspec.yaml build_app/pubspec.yaml
+
+      - name: Paketleri taýýarla
+        working-directory: build_app
+        run: flutter pub get
+
+      - name: APK döret
+        working-directory: build_app
+        run: flutter build apk --release
+
+      - name: APK-ni ýükle
+        uses: actions/upload-artifact@v4
+        with:
+          name: tkm-telefon-ussa-apk
+          path: build_app/build/app/outputs/flutter-apk/app-release.apk
