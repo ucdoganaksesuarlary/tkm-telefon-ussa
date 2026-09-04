@@ -23,10 +23,18 @@ jobs:
         run: |
           flutter create --project-name tkm_telefon_ussa build_app
 
-      - name: Öz kodumyzy goý
+      - name: Kodlary göçür
         run: |
           cp lib/main.dart build_app/lib/main.dart
           cp pubspec.yaml build_app/pubspec.yaml
+          mkdir -p build_app/android/app
+          cp android/app/google-services.json build_app/android/app/google-services.json
+
+      - name: Firebase plugin goş
+        working-directory: build_app
+        run: |
+          sed -i '/id("com.android.application")/a\    id("com.google.gms.google-services") version "4.4.2"' android/app/build.gradle.kts
+          sed -i '/plugins {/a\    id("com.google.gms.google-services") version "4.4.2" apply false' android/settings.gradle.kts
 
       - name: Paketleri taýýarla
         working-directory: build_app
